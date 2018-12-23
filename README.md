@@ -45,17 +45,17 @@ export class CurrencyService {
     constructor(private httpClient: HttpClient) {}
     getCurrency(currencyRegion: string): Observable<Currency> {
         if (currencyRegion === 'usd_inr') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=USD_INR&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=USD_INR&compact=y');
         } else if (currencyRegion === 'inr_usd') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=INR_USD&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_USD&compact=y');
         } else if (currencyRegion === 'jpy_inr') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=JPY_INR&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=JPY_INR&compact=y');
         } else if (currencyRegion === 'inr_jpy') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=INR_JPY&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_JPY&compact=y');
         } else if (currencyRegion === 'eur_inr') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=EUR_INR&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=EUR_INR&compact=y');
         } else if (currencyRegion === 'inr_eur') {
-            return this.httpClient.get<Currency>('http://free.currencyconverterapi.com/api/v5/convert?q=INR_EUR&compact=y');
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_EUR&compact=y');
         }
     }
 }
@@ -104,8 +104,8 @@ export interface Currency {
                 <i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
                   aria-hidden="true"></i><i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Usd" [(ngModel)]="amount" name="currencyUSDTo" placeholder="USD To INR"
-                    required (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Usd" [(ngModel)]="amount" name="currencyUSDTo" placeholder="USD To INR"
+                    required >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
@@ -123,8 +123,8 @@ export interface Currency {
                 <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
                   aria-hidden="true"></i><i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINR" placeholder="INR To USD"
-                    required (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINR" placeholder="INR To USD"
+                    required >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
@@ -142,8 +142,8 @@ export interface Currency {
                 <i class="fa fa-yen w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
                   class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyCADToINR" required
-                    placeholder="JPY To INR" (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyCADToINR" required
+                    placeholder="JPY To INR" >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
@@ -161,8 +161,8 @@ export interface Currency {
                 <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
                   aria-hidden="true"></i><i class="fa fa-yen w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINRToCAD" required
-                    placeholder="INR To JPY" (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINRToCAD" required
+                    placeholder="INR To JPY" >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
@@ -180,8 +180,8 @@ export interface Currency {
                 <i class="fa fa-euro w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
                   class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyEURToINR" required
-                    placeholder="EUR To INR" (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyEURToINR" required
+                    placeholder="EUR To INR" >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
@@ -199,8 +199,8 @@ export interface Currency {
                 <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
                   aria-hidden="true"></i><i class="fa fa-euro w-25 p-3" aria-hidden="true"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINRToEUR" required
-                    placeholder="INR To EUR" (keypress)="numberOnly($event)">
+                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINRToEUR" required
+                    placeholder="INR To EUR" >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
                 </div>
