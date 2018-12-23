@@ -1,0 +1,142 @@
+<div class="container">
+  <div class="row">
+    <div class="col- mx-auto">
+      <mdb-card class="text-center">
+        <mdb-card-header class="indigo text-white">Currency Converter</mdb-card-header>
+        <mdb-card-body style="background-color:#fafafa">
+          <mdb-card-title>
+            <div class="dropdown" mdbDropdown>
+              <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
+                mdbWavesEffect>
+                Select Conversion
+              </button>
+              <div class="dropdown-menu dropdown-primary">
+                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id)">{{conversion.name}}</button>
+              </div>
+            </div>
+          </mdb-card-title>
+          <mdb-card-text>
+            <form class="text-center border border-light p-5" #conversionForm="ngForm">
+
+              <div *ngIf="usdToInrSelect">
+                <i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
+                  aria-hidden="true"></i><i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Usd" [(ngModel)]="amount" name="currencyUSDTo" placeholder="USD To INR"
+                    required (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                      <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                    </button>
+                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+              <div *ngIf="inrToUsdSelect">
+                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
+                  aria-hidden="true"></i><i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINR" placeholder="INR To USD"
+                    required (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                      </button>
+                  <mdb-card-text>{{convertedAmount | currency:'USD'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+              <div *ngIf="jpyToInrSelect">
+                <i class="fa fa-yen w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
+                  class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyCADToINR" required
+                    placeholder="JPY To INR" (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                      </button>
+                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+              <div *ngIf="inrToJpySelect">
+                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
+                  aria-hidden="true"></i><i class="fa fa-yen w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINRToCAD" required
+                    placeholder="INR To JPY" (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                      </button>
+                  <mdb-card-text>{{convertedAmount | currency:'JPY'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+              <div *ngIf="eurToInrSelect">
+                <i class="fa fa-euro w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
+                  class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyEURToINR" required
+                    placeholder="EUR To INR" (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                      </button>
+                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+              <div *ngIf="inrToEurSelect">
+                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
+                  aria-hidden="true"></i><i class="fa fa-euro w-25 p-3" aria-hidden="true"></i>
+                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
+                  <input mdbInputDirective type="text" id="Inr" [(ngModel)]="amount" name="currencyINRToEUR" required
+                    placeholder="INR To EUR" (keypress)="numberOnly($event)">
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
+                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
+                </div>
+                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
+                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
+                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
+                      </button>
+                  <mdb-card-text>{{convertedAmount | currency:'EUR'}}</mdb-card-text>
+                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
+                    mdbWavesEffect>Back</button>
+                </div>
+              </div>
+
+            </form>
+          </mdb-card-text>
+        </mdb-card-body>
+        <mdb-card-footer class="blue-grey text-white">Exchange Rates updated every 30 minutes</mdb-card-footer>
+      </mdb-card>
+    </div>
+  </div>
+</div>
