@@ -8,7 +8,7 @@ Currency Converter App based on angular 6 with Material Bootstrap.
 ![alt text](img/wrong.PNG)
 
 ## Demo
-You may want to have a look at the demo https://vgupta1192.github.io/currency-demo/
+You may want to have a look at the demo: https://vgupta1192.github.io/currency-demo/
 
 ## Adding the component in your project
 ```
