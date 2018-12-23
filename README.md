@@ -1,7 +1,11 @@
 # Currency Converter
 Currency Converter App based on angular 6 with Material Bootstrap.
-![alt text](img/usdToInr.PNG)![alt text](img/usdToInrResult.PNG)![alt text](img/allConversions.PNG)
-![alt text](img/copy.PNG)![alt text](img/europe.PNG)![alt text](img/wrong.PNG)
+![alt text](img/usdToInr.PNG)
+![alt text](img/usdToInrResult.PNG)
+![alt text](img/allConversions.PNG)
+![alt text](img/copy.PNG)
+![alt text](img/europe.PNG)
+![alt text](img/wrong.PNG)
 
 ## Adding the component in your project
 ```
