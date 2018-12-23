@@ -12,7 +12,6 @@ Currency Converter App based on angular 6 with Material Bootstrap.
 npm install --save angular-bootstrap-md font-awesome hammerjs chart.js@2.5.0
 ```
 
-```
 ### Services
 ```
 The service call for getting the current currency rate for different currencies.
