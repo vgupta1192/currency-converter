@@ -16,6 +16,12 @@ Currency Converter App based on angular 6 with Material Bootstrap.
 npm install --save angular-bootstrap-md font-awesome hammerjs chart.js@2.5.0
 ```
 
+### App Details
+```
+App can be used to convert different currencies like dollar to Indian Rupees and Indian Rupees to European Pound and a few other currencies etc. in a web application.
+User also has the option to directly copy the converted currency into the clipboard.
+```
+
 ### Services
 ```
 The service call for getting the current currency rate for different currencies.
