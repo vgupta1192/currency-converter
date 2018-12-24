@@ -30,7 +30,6 @@ The service call for getting the current currency rate for different currencies.
 1. currency.service.ts
 ```
 ### currency.service.ts
-``` typescript
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { Currency } from './currency.model';
@@ -41,10 +40,11 @@ import { Observable } from 'rxjs';
 })
 export class CurrencyService {
     constructor(private httpClient: HttpClient) {}
-    getCurrency(currencyRegion: string): Observable<Currency> {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=' + currencyRegion + '&compact=y');
+    getCurrency(fromCurrency: string, toCurrency: string): Observable<Currency> {
+        return this.httpClient.get<Currency>('https://ratesapi.io/api/latest?base=' + fromCurrency + '&symbols=' + toCurrency);
     }
 }
+
 
 ```
 ### Model
@@ -55,12 +55,15 @@ export class CurrencyService {
 ### currency.model.ts
 ``` typescript
 export interface Currency {
-    USD_INR: {val};
-    INR_USD: {val};
-    JPY_INR: {val};
-    INR_JPY: {val};
-    EUR_INR: {val};
-    INR_EUR: {val};
+    rates:
+    {
+        INR,
+        USD,
+        JPY,
+        EUR,
+        CAD,
+        KRW
+    };
 }
 
 ```
@@ -68,29 +71,51 @@ export interface Currency {
 ``` html
 <div class="container">
   <div class="row">
-    <div class="col- mx-auto">
+    <div class="col- mx-auto converter-currency">
       <mdb-card class="text-center">
         <mdb-card-header class="indigo text-white">Currency Converter</mdb-card-header>
         <mdb-card-body style="background-color:#fafafa">
           <mdb-card-title>
-            <div class="dropdown" mdbDropdown>
-              <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
-                mdbWavesEffect>
-               {{dropdownName}}
-              </button>
-              <div class="dropdown-menu dropdown-primary">
-                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id,conversion.name)">{{conversion.name}}</button>
-              </div>
-            </div>
+            <div class="row">
+                <div class="col-5">
+                    <div class="dropdown" mdbDropdown>
+                        <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
+                          mdbWavesEffect>
+                          {{fromDropdownName}}
+                        </button>
+                        <div class="dropdown-menu dropdown-primary">
+                          <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionFromChange(conversion.id,conversion.name)">{{conversion.name}}</button>
+                        </div>
+                      </div>
+                </div>
+                <div class="col-2">
+                    <i class="fa fa-arrow-right w-25 p-3 align-arrow" aria-hidden="true"></i>
+                </div>
+                <div class="col-5">
+                    <div class="dropdown" mdbDropdown>
+                        <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
+                          mdbWavesEffect>
+                          {{toDropdownName}}
+                        </button>
+                        <div class="dropdown-menu dropdown-primary">
+                          <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionToChange(conversion.id,conversion.name)">{{conversion.name}}</button>
+                        </div>
+                      </div>
+                </div>
+          </div>
           </mdb-card-title>
           <mdb-card-text>
             <form class="text-center border border-light p-5" #conversionForm="ngForm">
 
-              <div *ngIf="usdToInrSelect">
-                <i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
-                  aria-hidden="true"></i><i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
+                <i class="fa w-25 p-3" aria-hidden="true"
+                [ngClass]="fromDropdownName === 'USD' || fromDropdownName === 'CAD' ? 'fa-dollar' : fromDropdownName === 'INR' ? 'fa-rupee' : 
+                fromDropdownName === 'EUR' ? 'fa-euro' : fromDropdownName === 'JPY' ? 'fa-yen' : 'fa-krw'"></i>
+                <i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i>
+                <i class="fa w-25 p-3" aria-hidden="true"
+                [ngClass]="toDropdownName === 'USD' || toDropdownName === 'CAD' ? 'fa-dollar' : toDropdownName === 'INR' ? 'fa-rupee' : 
+                toDropdownName === 'EUR' ? 'fa-euro' : toDropdownName === 'JPY' ? 'fa-yen' : 'fa-krw'"></i>
                 <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Usd" [(ngModel)]="amount" name="currencyUSDTo" placeholder="USD To INR"
+                  <input mdbInputDirective type="number" id="currencyId" [(ngModel)]="amount" name="currencyInput"
                     required >
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
                     [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
@@ -99,111 +124,20 @@ export interface Currency {
                     <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
                       <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
                     </button>
-                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'USD'">{{convertedAmount | currency:'USD'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'INR'">{{convertedAmount | currency:'INR'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'EUR'">{{convertedAmount | currency:'EUR'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'JPY'">{{convertedAmount | currency:'JPY'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'CAD'">{{convertedAmount | currency:'CAD'}}</mdb-card-text>
+                  <mdb-card-text *ngIf="toDropdownName === 'KRW'">{{convertedAmount | currency:'KRW'}}</mdb-card-text>
                   <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
                     mdbWavesEffect>Back</button>
-                </div>
-              </div>
-
-              <div *ngIf="inrToUsdSelect">
-                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
-                  aria-hidden="true"></i><i class="fa fa-dollar w-25 p-3" aria-hidden="true"></i>
-                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINR" placeholder="INR To USD"
-                    required >
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
-                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
-                </div>
-                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
-                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
-                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
-                      </button>
-                  <mdb-card-text>{{convertedAmount | currency:'USD'}}</mdb-card-text>
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
-                    mdbWavesEffect>Back</button>
-                </div>
-              </div>
-
-              <div *ngIf="jpyToInrSelect">
-                <i class="fa fa-yen w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
-                  class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
-                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyCADToINR" required
-                    placeholder="JPY To INR" >
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
-                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
-                </div>
-                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
-                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
-                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
-                      </button>
-                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
-                    mdbWavesEffect>Back</button>
-                </div>
-              </div>
-
-              <div *ngIf="inrToJpySelect">
-                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
-                  aria-hidden="true"></i><i class="fa fa-yen w-25 p-3" aria-hidden="true"></i>
-                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINRToCAD" required
-                    placeholder="INR To JPY" >
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
-                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
-                </div>
-                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
-                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
-                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
-                      </button>
-                  <mdb-card-text>{{convertedAmount | currency:'JPY'}}</mdb-card-text>
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
-                    mdbWavesEffect>Back</button>
-                </div>
-              </div>
-
-              <div *ngIf="eurToInrSelect">
-                <i class="fa fa-euro w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3" aria-hidden="true"></i><i
-                  class="fa fa-rupee w-25 p-3" aria-hidden="true"></i>
-                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyEURToINR" required
-                    placeholder="EUR To INR" >
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
-                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
-                </div>
-                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
-                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
-                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
-                      </button>
-                  <mdb-card-text>{{convertedAmount | currency:'INR'}}</mdb-card-text>
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
-                    mdbWavesEffect>Back</button>
-                </div>
-              </div>
-
-              <div *ngIf="inrToEurSelect">
-                <i class="fa fa-rupee w-25 p-3" aria-hidden="true"></i><i class="fa fa-arrow-right w-25 p-3"
-                  aria-hidden="true"></i><i class="fa fa-euro w-25 p-3" aria-hidden="true"></i>
-                <div class="md-form wow fadeInUp" *ngIf="showConfirm">
-                  <input mdbInputDirective type="number" id="Inr" [(ngModel)]="amount" name="currencyINRToEUR" required
-                    placeholder="INR To EUR" >
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="convertCurrency()"
-                    [disabled]="!conversionForm.valid" mdbWavesEffect>Convert</button>
-                </div>
-                <div class="md-form wow fadeInUp" data-wow-delay="0.6s" *ngIf="!showConfirm">
-                    <button class="btn-copy-code btn btn-outline-grey btn-sm px-2 waves-effect" (click)="copyMessage()">
-                        <i class="fa fa-copy mr-1" *ngIf="copyLabel === 'Copy Amount'"></i> {{copyLabel}}
-                      </button>
-                  <mdb-card-text>{{convertedAmount | currency:'EUR'}}</mdb-card-text>
-                  <button mdbBtn type="button" color="info" block="true" outline="true" (click)="showConfirm=!showConfirm"
-                    mdbWavesEffect>Back</button>
-                </div>
               </div>
 
             </form>
           </mdb-card-text>
         </mdb-card-body>
-        <mdb-card-footer class="blue-grey text-white">Exchange Rates updated every 30 minutes</mdb-card-footer>
+        <mdb-card-footer class="blue-grey text-white">Exchange Rates updated frequently</mdb-card-footer>
       </mdb-card>
     </div>
   </div>
@@ -227,143 +161,83 @@ export class CurrencyConverterComponent implements OnInit {
   index: number;
   dropdownName: string;
   showConfirm: boolean;
-  usdToInrSelect: boolean;
-  inrToUsdSelect: boolean;
-  jpyToInrSelect: boolean;
-  inrToJpySelect: boolean;
-  eurToInrSelect: boolean;
-  inrToEurSelect: boolean;
   conversions = [
     {
       id: 1,
-      name: 'USD TO INR'
+      name: 'USD'
     },
     {
       id: 2,
-      name: 'INR TO USD'
+      name: 'INR'
     },
     {
       id: 3,
-      name: 'JPY TO INR'
+      name: 'JPY'
     },
     {
       id: 4,
-      name: 'INR TO JPY'
+      name: 'EUR'
     },
     {
       id: 5,
-      name: 'EUR TO INR'
+      name: 'CAD'
     },
     {
       id: 6,
-      name: 'INR TO EUR'
+      name: 'KRW'
     }
   ];
+  fromDropdownName: string;
+  toDropdownName: string;
 
   constructor(private currencyService: CurrencyService) {}
 
   ngOnInit() {
     this.showConfirm = true;
     this.index = 1;
-	this.dropdownName = 'USD To INR';
+    this.fromDropdownName = 'USD';
+    this.toDropdownName = 'INR';
     this.copyLabel = 'Copy Amount';
-    this.usdToInrSelect = true;
-    this.inrToUsdSelect = false;
-    this.jpyToInrSelect = false;
-    this.inrToJpySelect = false;
-    this.eurToInrSelect = false;
-    this.inrToEurSelect = false;
   }
 
-  conversionChange(id: number, conversionName: string) {
-    this.dropdownName = conversionName;
-    if (id === 1) {
-      this.resetConversion(id);
-      this.usdToInrSelect = true;
-      this.inrToUsdSelect = false;
-      this.jpyToInrSelect = false;
-      this.inrToJpySelect = false;
-      this.eurToInrSelect = false;
-      this.inrToEurSelect = false;
-    } else if (id === 2) {
-      this.resetConversion(id);
-      this.usdToInrSelect = false;
-      this.inrToUsdSelect = true;
-      this.jpyToInrSelect = false;
-      this.inrToJpySelect = false;
-      this.eurToInrSelect = false;
-      this.inrToEurSelect = false;
-    } else if (id === 3) {
-      this.resetConversion(id);
-      this.usdToInrSelect = false;
-      this.inrToUsdSelect = false;
-      this.jpyToInrSelect = true;
-      this.inrToJpySelect = false;
-      this.eurToInrSelect = false;
-      this.inrToEurSelect = false;
-    } else if (id === 4) {
-      this.resetConversion(id);
-      this.usdToInrSelect = false;
-      this.inrToUsdSelect = false;
-      this.jpyToInrSelect = false;
-      this.inrToJpySelect = true;
-      this.eurToInrSelect = false;
-      this.inrToEurSelect = false;
-    } else if (id === 5) {
-      this.resetConversion(id);
-      this.usdToInrSelect = false;
-      this.inrToUsdSelect = false;
-      this.jpyToInrSelect = false;
-      this.inrToJpySelect = false;
-      this.eurToInrSelect = true;
-      this.inrToEurSelect = false;
-    } else {
-      this.resetConversion(id);
-      this.usdToInrSelect = false;
-      this.inrToUsdSelect = false;
-      this.jpyToInrSelect = false;
-      this.inrToJpySelect = false;
-      this.eurToInrSelect = false;
-      this.inrToEurSelect = true;
-    }
+  conversionFromChange(id: number, conversionName: string) {
+    this.resetConversion();
+    this.fromDropdownName = conversionName;
+  }
+
+  conversionToChange(id: number, conversionName: string) {
+    this.resetConversion();
+    this.toDropdownName = conversionName;
   }
 
   convertCurrency() {
     this.copyLabel = 'Copy Amount';
-    if (this.index === 1) {
-      this.currencyService.getCurrency('usd_inr').subscribe(response => {
-        this.convertedCurrency(response.USD_INR.val);
-      });
-    } else if (this.index === 2) {
-      this.currencyService.getCurrency('inr_usd').subscribe(response => {
-        this.convertedCurrency(response.INR_USD.val);
-      });
-    } else if (this.index === 3) {
-      this.currencyService.getCurrency('jpy_inr').subscribe(response => {
-        this.convertedCurrency(response.JPY_INR.val);
-      });
-    } else if (this.index === 4) {
-      this.currencyService.getCurrency('inr_jpy').subscribe(response => {
-        this.convertedCurrency(response.INR_JPY.val);
-      });
-    } else if (this.index === 5) {
-      this.currencyService.getCurrency('eur_inr').subscribe(response => {
-        this.convertedCurrency(response.EUR_INR.val);
-      });
-    } else {
-      this.currencyService.getCurrency('inr_eur').subscribe(response => {
-        this.convertedCurrency(response.INR_EUR.val);
-      });
-    }
+    this.currencyService.getCurrency(this.fromDropdownName, this.toDropdownName).subscribe(response => {
+      if (this.toDropdownName === 'USD') {
+        this.convertedCurrency(response.rates.USD);
+      } else if (this.toDropdownName === 'INR') {
+        this.convertedCurrency(response.rates.INR);
+      } else if (this.toDropdownName === 'EUR') {
+        this.convertedCurrency(response.rates.EUR);
+      } else if (this.toDropdownName === 'JPY') {
+        this.convertedCurrency(response.rates.JPY);
+      } else if (this.toDropdownName === 'CAD') {
+        this.convertedCurrency(response.rates.CAD);
+      } else {
+        this.convertedCurrency(response.rates.KRW);
+      }
+    });
   }
 
   convertedCurrency(response: any) {
+    if (response === undefined) {
+      response = 1;
+    }
     this.convertedAmount = this.amount * response;
     this.showConfirm = false;
   }
 
-  resetConversion(id: number) {
-    this.index = id;
+  resetConversion() {
     this.showConfirm = true;
     this.amount = '';
     this.copyLabel = 'Copy Amount';
@@ -397,19 +271,28 @@ export class CurrencyConverterComponent implements OnInit {
 
 ### currency-converter.component.scss
 ``` 
-.dropdown .dropdown-menu {
-    left: 64px !important;
+.dropdown-menu {
+    min-width:95%;
 }
+
 .dropdown .dropdown-menu .dropdown-item {
-    margin-left: 13px !important;
+    margin-left: 17px;
 }
 
 .dropdown .dropdown-menu .dropdown-item:hover {
-    width:85%;
+    width: 5em !important;
 }
 
 .text-white {
     color: #fff;
+}
+
+.converter-currency {
+    width: 391px;
+}
+
+.align-arrow {
+    margin-left: -23px;
 }
 
 ```
