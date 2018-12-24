@@ -44,19 +44,7 @@ import { Observable } from 'rxjs';
 export class CurrencyService {
     constructor(private httpClient: HttpClient) {}
     getCurrency(currencyRegion: string): Observable<Currency> {
-        if (currencyRegion === 'usd_inr') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=USD_INR&compact=y');
-        } else if (currencyRegion === 'inr_usd') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_USD&compact=y');
-        } else if (currencyRegion === 'jpy_inr') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=JPY_INR&compact=y');
-        } else if (currencyRegion === 'inr_jpy') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_JPY&compact=y');
-        } else if (currencyRegion === 'eur_inr') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=EUR_INR&compact=y');
-        } else if (currencyRegion === 'inr_eur') {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=INR_EUR&compact=y');
-        }
+            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=' + currencyRegion + '&compact=y');
     }
 }
 
@@ -90,10 +78,10 @@ export interface Currency {
             <div class="dropdown" mdbDropdown>
               <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
                 mdbWavesEffect>
-                Select Conversion
+               {{dropdownName}}
               </button>
               <div class="dropdown-menu dropdown-primary">
-                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id)">{{conversion.name}}</button>
+                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id,conversion.name)">{{conversion.name}}</button>
               </div>
             </div>
           </mdb-card-title>
@@ -239,6 +227,7 @@ export class CurrencyConverterComponent implements OnInit {
   convertedAmount: number;
   copyLabel: string;
   index: number;
+  dropdownName: string;
   showConfirm: boolean;
   usdToInrSelect: boolean;
   inrToUsdSelect: boolean;
@@ -278,6 +267,7 @@ export class CurrencyConverterComponent implements OnInit {
   ngOnInit() {
     this.showConfirm = true;
     this.index = 1;
+	this.dropdownName = 'USD To INR';
     this.copyLabel = 'Copy Amount';
     this.usdToInrSelect = true;
     this.inrToUsdSelect = false;
@@ -287,7 +277,8 @@ export class CurrencyConverterComponent implements OnInit {
     this.inrToEurSelect = false;
   }
 
-  conversionChange(id: number) {
+  conversionChange(id: number, conversionName: string) {
+    this.dropdownName = conversionName;
     if (id === 1) {
       this.resetConversion(id);
       this.usdToInrSelect = true;
@@ -409,16 +400,14 @@ export class CurrencyConverterComponent implements OnInit {
 ### currency-converter.component.scss
 ``` 
 .dropdown .dropdown-menu {
-    left: 39px !important;
-    width:70% !important;
+    left: 64px !important;
 }
 .dropdown .dropdown-menu .dropdown-item {
-    margin-left: 36px !important;
+    margin-left: 13px !important;
 }
 
 .dropdown .dropdown-menu .dropdown-item:hover {
-    margin-left: 36px !important;
-    width:70%;
+    width:85%;
 }
 
 .text-white {
