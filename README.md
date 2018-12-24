@@ -30,6 +30,7 @@ The service call for getting the current currency rate for different currencies.
 1. currency.service.ts
 ```
 ### currency.service.ts
+```typescript
 import { Injectable } from '@angular/core';
 import { HttpClient} from '@angular/common/http';
 import { Currency } from './currency.model';
