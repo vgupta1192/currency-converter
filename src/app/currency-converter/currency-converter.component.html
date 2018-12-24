@@ -8,10 +8,10 @@
             <div class="dropdown" mdbDropdown>
               <button mdbDropdownToggle mdbBtn color="primary" class="dropdown-toggle waves-light" type="button"
                 mdbWavesEffect>
-                Select Conversion
+                {{dropdownName}}
               </button>
               <div class="dropdown-menu dropdown-primary">
-                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id)">{{conversion.name}}</button>
+                <button class="dropdown-item" *ngFor="let conversion of conversions" (click)="conversionChange(conversion.id,conversion.name)">{{conversion.name}}</button>
               </div>
             </div>
           </mdb-card-title>

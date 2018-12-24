@@ -11,6 +11,7 @@ export class CurrencyConverterComponent implements OnInit {
   convertedAmount: number;
   copyLabel: string;
   index: number;
+  dropdownName: string;
   showConfirm: boolean;
   usdToInrSelect: boolean;
   inrToUsdSelect: boolean;
@@ -50,6 +51,7 @@ export class CurrencyConverterComponent implements OnInit {
   ngOnInit() {
     this.showConfirm = true;
     this.index = 1;
+	this.dropdownName = 'USD To INR';
     this.copyLabel = 'Copy Amount';
     this.usdToInrSelect = true;
     this.inrToUsdSelect = false;
@@ -59,7 +61,8 @@ export class CurrencyConverterComponent implements OnInit {
     this.inrToEurSelect = false;
   }
 
-  conversionChange(id: number) {
+  conversionChange(id: number, conversionName: string) {
+    this.dropdownName = conversionName;
     if (id === 1) {
       this.resetConversion(id);
       this.usdToInrSelect = true;
