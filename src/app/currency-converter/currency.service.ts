@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 })
 export class CurrencyService {
     constructor(private httpClient: HttpClient) {}
-    getCurrency(currencyRegion: string): Observable<Currency> {
-            return this.httpClient.get<Currency>('https://free.currencyconverterapi.com/api/v5/convert?q=' + currencyRegion + '&compact=y');
+    getCurrency(fromCurrency: string, toCurrency: string): Observable<Currency> {
+        return this.httpClient.get<Currency>('https://ratesapi.io/api/latest?base=' + fromCurrency + '&symbols=' + toCurrency);
     }
 }
