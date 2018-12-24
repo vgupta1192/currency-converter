@@ -1,11 +1,23 @@
+.dropdown-menu {
+    min-width:95%;
+}
+
 .dropdown .dropdown-menu .dropdown-item {
-    margin-left: 38px !important;
+    margin-left: 17px;
 }
 
 .dropdown .dropdown-menu .dropdown-item:hover {
-    width: 55%;
+    width: 5em !important;
 }
 
 .text-white {
     color: #fff;
+}
+
+.converter-currency {
+    width: 391px;
+}
+
+.align-arrow {
+    margin-left: -23px;
 }
