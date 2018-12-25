@@ -14,7 +14,10 @@ You may want to have a look at the demo: https://vgupta1192.github.io/currency-d
 ```
 ### Dependencies
 ```
-npm install --save angular-bootstrap-md font-awesome hammerjs chart.js@2.5.0
+npm install --save angular-bootstrap-md
+npm install --save font-awesome
+npm install --save hammerjs
+npm install --save chart.js@2.5.0
 ```
 
 ### App Details
