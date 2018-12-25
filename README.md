@@ -44,6 +44,8 @@ import { Observable } from 'rxjs';
 })
 export class CurrencyService {
     constructor(private httpClient: HttpClient) {}
+
+    /* To get the current currency exchange rates based on the base provided for the given 'toCurrency' */
     getCurrency(fromCurrency: string, toCurrency: string): Observable<Currency> {
         return this.httpClient.get<Currency>('https://ratesapi.io/api/latest?base=' + fromCurrency + '&symbols=' + toCurrency);
     }
@@ -204,16 +206,19 @@ export class CurrencyConverterComponent implements OnInit {
     this.copyLabel = 'Copy Amount';
   }
 
+  /* Method will run when a user click on the currency dropdown from which the user has to convert  */
   conversionFromChange(id: number, conversionName: string) {
     this.resetConversion();
     this.fromDropdownName = conversionName;
   }
 
+  /* Method will run when a user click on the currency dropdown to which the user has to convert  */
   conversionToChange(id: number, conversionName: string) {
     this.resetConversion();
     this.toDropdownName = conversionName;
   }
 
+   /* Method will run when a user click on the 'Convert' button to convert the currency entered */
   convertCurrency() {
     this.copyLabel = 'Copy Amount';
     this.currencyService.getCurrency(this.fromDropdownName, this.toDropdownName).subscribe(response => {
@@ -233,6 +238,7 @@ export class CurrencyConverterComponent implements OnInit {
     });
   }
 
+   /* Method will run to calculate the logic for the conversion*/
   convertedCurrency(response: any) {
     if (response === undefined) {
       response = 1;
@@ -241,20 +247,14 @@ export class CurrencyConverterComponent implements OnInit {
     this.showConfirm = false;
   }
 
+  /* Method will run to reset the currency converter app on every dropdown selection*/
   resetConversion() {
     this.showConfirm = true;
     this.amount = '';
     this.copyLabel = 'Copy Amount';
   }
 
-  numberOnly(event): boolean {
-    const charCode = event.which ? event.which : event.keyCode;
-    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
-      return false;
-    }
-    return true;
-  }
-
+  /* Method will run to copy the converted currency to clipboard*/
   copyMessage() {
     this.copyLabel = 'Copied!';
     const selBox = document.createElement('textarea');
@@ -270,6 +270,7 @@ export class CurrencyConverterComponent implements OnInit {
     document.body.removeChild(selBox);
   }
 }
+
 
 ```
 
@@ -298,35 +299,5 @@ export class CurrencyConverterComponent implements OnInit {
 .align-arrow {
     margin-left: -23px;
 }
-
-```
-
-### app.module.ts
-```
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule, NO_ERRORS_SCHEMA } from '@angular/core';
-import { MDBBootstrapModule } from 'angular-bootstrap-md';
-import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
-
-import { AppComponent } from './app.component';
-import { CurrencyConverterComponent } from './currency-converter/currency-converter.component';
-
-@NgModule({
-  declarations: [
-    AppComponent,
-    CurrencyConverterComponent
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    HttpClientModule,
-    MDBBootstrapModule.forRoot()
-  ],
-  schemas: [ NO_ERRORS_SCHEMA ],
-  providers: [],
-  bootstrap: [AppComponent]
-})
-export class AppModule { }
 
 ```
