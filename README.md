@@ -47,7 +47,7 @@ export class CurrencyService {
 
     /* To get the current currency exchange rates based on the base provided for the given 'toCurrency' */
     getCurrency(fromCurrency: string, toCurrency: string): Observable<Currency> {
-        return this.httpClient.get<Currency>('https://ratesapi.io/api/latest?base=' + fromCurrency + '&symbols=' + toCurrency);
+        return this.httpClient.get<Currency>('https://api.frankfurter.app/latest?from=' + fromCurrency + '&to=' + toCurrency);
     }
 }
 
